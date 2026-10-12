@@ -12,6 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.flashcardquiz.ui.theme.FlashcardQuizTheme
+import com.example.flashcardquiz.ui.DeckListScreen
+import com.example.flashcardquiz.ui.CardListScreen
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,29 +26,21 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FlashcardQuizTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "decks") {
+                    composable("decks") {
+                        DeckListScreen(
+                            onDeckClick = { deckId -> navController.navigate("cards/$deckId") }
+                        )
+                    }
+                    composable(
+                        route = "cards/{deckId}",
+                        arguments = listOf(navArgument("deckId") { type = NavType.LongType })
+                    ) {
+                        CardListScreen(onBack = { navController.popBackStack() })
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FlashcardQuizTheme {
-        Greeting("Android")
     }
 }
