@@ -22,6 +22,4 @@ data class Card(
     val deckId: Long,
     val front: String,
     val back: String,
-    val timesCorrect: Int = 0,
-    val timesMissed: Int = 0
 )
